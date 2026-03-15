@@ -1,4 +1,3 @@
-cat > ~/xbot/poster_kaspa.py << 'PYEOF'
 import os
 import random
 import time
@@ -30,55 +29,54 @@ def gerar_com_gemini(prompt):
         return None
 
 def gerar_tweet():
-    temas = ["BlockDAG architecture","GhostDAG protocol","Kaspa mining","KAS tokenomics","Kaspa vs Bitcoin","KRC-20 smart contracts","Kaspa network speed","Kaspa decentralization"]
+    temas = ["BlockDAG architecture","GhostDAG protocol","Kaspa mining","KAS tokenomics","Kaspa vs Bitcoin","KRC-20 smart contracts"]
     tema = random.choice(temas)
     prompt = f"Write a unique tweet about {tema} related to Kaspa crypto. Max 240 chars. No hashtags. Max 1 emoji. Expert tone. Only return the tweet."
     resultado = gerar_com_gemini(prompt)
     if resultado:
         return resultado[:240]
     fallback = [
-        "Kaspa's BlockDAG processes 1 block per second today, with roadmap targeting 100 blocks per second.",
-        "GhostDAG doesn't discard parallel blocks, it orders them all, making Kaspa fundamentally more efficient.",
-        "Kaspa mining attracts serious ASIC development because the network is designed for long-term proof of work.",
-        "KRC-20 brings smart contracts to Kaspa without sacrificing base layer speed or security.",
+        "Kaspa BlockDAG processes 1 block per second today with roadmap targeting 100.",
+        "GhostDAG does not discard parallel blocks it orders them all.",
+        "Kaspa mining attracts serious ASIC development for long-term proof of work.",
+        "KRC-20 brings smart contracts to Kaspa without sacrificing speed.",
         "Kaspa achieves near-instant finality through parallel block confirmation."
     ]
     return random.choice(fallback)
 
 def gerar_thread():
-    temas = ["How Kaspa BlockDAG works vs blockchain","Why GhostDAG is a breakthrough","Kaspa mining explained","Why Kaspa could be the future of proof of work","Kaspa vs Bitcoin technical comparison"]
+    temas = ["How Kaspa BlockDAG works","Why GhostDAG is a breakthrough","Kaspa mining explained","Kaspa vs Bitcoin comparison"]
     tema = random.choice(temas)
-    prompt = f"Write a Twitter thread of 7 parts about: {tema}. Part 1 starts with THREAD. Parts 2-7 start with number/. Max 240 chars each. No hashtags. Separate with ###. Only return the parts."
+    prompt = f"Write Twitter thread of 6 parts about: {tema}. Part 1 starts with THREAD. Parts 2-6 start with number/. Max 240 chars each. No hashtags. Separate with ###. Only return parts."
     resultado = gerar_com_gemini(prompt)
     if resultado:
         partes = [p.strip() for p in resultado.split("###") if p.strip()]
         if len(partes) >= 4:
-            return partes[:7]
+            return partes[:6]
     return [
-        "THREAD 🧵 Why Kaspa is one of the most technically interesting crypto projects right now:",
-        "1/ Kaspa uses BlockDAG instead of traditional blockchain. Blocks are created in parallel.",
-        "2/ The GhostDAG protocol orders all parallel blocks into a coherent ledger.",
+        "THREAD Why Kaspa is the most technically interesting crypto right now:",
+        "1/ Kaspa uses BlockDAG instead of traditional blockchain.",
+        "2/ GhostDAG orders all parallel blocks into a coherent ledger.",
         "3/ This allows Kaspa to run at 1 block per second today.",
         "4/ Traditional blockchains discard competing blocks. Kaspa includes them all.",
-        "5/ The result: near-instant confirmations and high throughput.",
-        "6/ This is why many consider Kaspa the most advanced proof-of-work network today."
+        "5/ Near-instant confirmations and high throughput without sacrificing security."
     ]
 
 def gerar_artigo():
-    temas = ["Complete guide to Kaspa BlockDAG","Understanding GhostDAG protocol","Kaspa mining complete guide","Why Kaspa is different from every crypto","Future of proof of work with Kaspa"]
+    temas = ["Complete guide to Kaspa BlockDAG","Understanding GhostDAG","Kaspa mining guide","Why Kaspa is unique"]
     tema = random.choice(temas)
-    prompt = f"Write a 12-part Twitter article about: {tema}. Part 1 starts with ARTICLE. Max 240 chars each. No hashtags. Separate with ###. Only return the parts."
+    prompt = f"Write 10-part Twitter article about: {tema}. Part 1 starts with ARTICLE. Max 240 chars each. No hashtags. Separate with ###. Only return parts."
     resultado = gerar_com_gemini(prompt)
     if resultado:
         partes = [p.strip() for p in resultado.split("###") if p.strip()]
-        if len(partes) >= 6:
-            return partes[:12]
+        if len(partes) >= 5:
+            return partes[:10]
     return None
 
 def postar_tweet():
     texto = gerar_tweet()
     client.create_tweet(text=texto)
-    print(f"Tweet: {texto[:80]}...")
+    print("Tweet: " + texto[:80])
 
 def postar_thread():
     partes = gerar_thread()
@@ -89,7 +87,7 @@ def postar_thread():
         r = client.create_tweet(text=parte, in_reply_to_tweet_id=tweet_id)
         tweet_id = r.data["id"]
         time.sleep(random.randint(3, 8))
-    print(f"Thread: {len(partes)} partes.")
+    print("Thread: " + str(len(partes)) + " partes.")
 
 def postar_artigo():
     partes = gerar_artigo()
@@ -103,7 +101,7 @@ def postar_artigo():
         r = client.create_tweet(text=parte, in_reply_to_tweet_id=tweet_id)
         tweet_id = r.data["id"]
         time.sleep(random.randint(4, 10))
-    print(f"Artigo: {len(partes)} partes.")
+    print("Artigo: " + str(len(partes)) + " partes.")
 
 posts_hoje = 0
 ultimo_reset = time.strftime("%d")
@@ -116,7 +114,7 @@ def resetar_se_novo_dia():
         ultimo_reset = hoje
         print("Novo dia - contadores resetados.")
 
-print("Bot Kaspa + Gemini iniciado!")
+print("Bot Kaspa Gemini iniciado!")
 
 while True:
     try:
@@ -133,6 +131,10 @@ while True:
         elif acao == "artigo":
             postar_artigo()
         posts_hoje += 1
-        print(f"Posts hoje: {posts_hoje}/28")
+        print("Posts hoje: " + str(posts_hoje) + "/28")
         espera = random.randint(2700, 5400)
-        print(f"Aguardando {espera/60:.0f} min...
+        print("Aguardando " + str(int(espera/60)) + " min...")
+        time.sleep(espera)
+    except Exception as e:
+        print("Erro: " + str(e))
+        time.sleep(600)
