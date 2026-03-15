@@ -1,3 +1,4 @@
+cat > ~/xbot/poster_kaspa.py << 'PYEOF'
 import os
 import random
 import time
@@ -23,109 +24,50 @@ client = tweepy.Client(
 def gerar_com_gemini(prompt):
     try:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_KEY}"
-        r = requests.post(url, json={
-            "contents": [{"parts": [{"text": prompt}]}]
-        }, timeout=30)
+        r = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=30)
         return r.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
     except:
         return None
 
 def gerar_tweet():
-    temas = [
-        "BlockDAG architecture advantages over traditional blockchain",
-        "GhostDAG protocol and how it works",
-        "Kaspa mining profitability and ASIC development",
-        "KAS tokenomics and supply mechanics",
-        "Kaspa network speed and scalability",
-        "KRC-20 smart contracts on Kaspa",
-        "Kaspa vs Bitcoin technical comparison",
-        "Kaspa decentralization advantages",
-        "Kaspa instant finality explained",
-        "Future of BlockDAG technology"
-    ]
+    temas = ["BlockDAG architecture","GhostDAG protocol","Kaspa mining","KAS tokenomics","Kaspa vs Bitcoin","KRC-20 smart contracts","Kaspa network speed","Kaspa decentralization"]
     tema = random.choice(temas)
-    prompt = f"""Write a unique, engaging tweet about: {tema}
-Rules:
-- Maximum 240 characters
-- No hashtags
-- Maximum 1 emoji
-- Expert crypto tone
-- Include a specific fact or number when possible
-- Sound natural, not robotic
-- Never start with "Kaspa is" or "Did you know"
-Return only the tweet text."""
-
+    prompt = f"Write a unique tweet about {tema} related to Kaspa crypto. Max 240 chars. No hashtags. Max 1 emoji. Expert tone. Only return the tweet."
     resultado = gerar_com_gemini(prompt)
     if resultado:
         return resultado[:240]
-    
     fallback = [
-        "Kaspa's BlockDAG processes 1 block per second today, with the roadmap targeting 10 and eventually 100 blocks per second.",
-        "GhostDAG doesn't discard parallel blocks — it orders them all, making Kaspa fundamentally more efficient than Bitcoin.",
-        "Kaspa mining attracts serious ASIC development because the network is designed for long-term proof of work security.",
-        "KRC-20 brings smart contract capability to Kaspa without sacrificing the base layer's speed or security.",
-        "Kaspa achieves near-instant finality through parallel block confirmation — something linear blockchains can't match."
+        "Kaspa's BlockDAG processes 1 block per second today, with roadmap targeting 100 blocks per second.",
+        "GhostDAG doesn't discard parallel blocks, it orders them all, making Kaspa fundamentally more efficient.",
+        "Kaspa mining attracts serious ASIC development because the network is designed for long-term proof of work.",
+        "KRC-20 brings smart contracts to Kaspa without sacrificing base layer speed or security.",
+        "Kaspa achieves near-instant finality through parallel block confirmation."
     ]
     return random.choice(fallback)
 
 def gerar_thread():
-    temas = [
-        "How Kaspa's BlockDAG works vs traditional blockchain",
-        "Why GhostDAG is a breakthrough in crypto consensus",
-        "Kaspa mining explained for beginners",
-        "Why Kaspa could be the future of proof of work",
-        "Kaspa vs Bitcoin: technical deep dive"
-    ]
+    temas = ["How Kaspa BlockDAG works vs blockchain","Why GhostDAG is a breakthrough","Kaspa mining explained","Why Kaspa could be the future of proof of work","Kaspa vs Bitcoin technical comparison"]
     tema = random.choice(temas)
-    prompt = f"""Write a Twitter thread of exactly 7 parts about: {tema}
-Rules:
-- Part 1: Hook starting with THREAD 🧵
-- Parts 2-7: start with number like 2/ 3/ etc
-- Each part maximum 240 characters
-- Educational, engaging and clear
-- Include real technical details
-- No hashtags
-- Make people want to read all parts
-Separate each part with ### symbol.
-Return only the 7 parts."""
-
+    prompt = f"Write a Twitter thread of 7 parts about: {tema}. Part 1 starts with THREAD. Parts 2-7 start with number/. Max 240 chars each. No hashtags. Separate with ###. Only return the parts."
     resultado = gerar_com_gemini(prompt)
     if resultado:
         partes = [p.strip() for p in resultado.split("###") if p.strip()]
         if len(partes) >= 4:
             return partes[:7]
-    
     return [
         "THREAD 🧵 Why Kaspa is one of the most technically interesting crypto projects right now:",
-        "1/ Kaspa uses BlockDAG instead of a traditional blockchain. This means blocks can be created in parallel, not just one after another.",
-        "2/ The GhostDAG protocol orders all those parallel blocks into a coherent ledger — without discarding any of them.",
-        "3/ This design allows Kaspa to run at 1 block per second today, with plans to scale much further.",
-        "4/ Traditional blockchains discard competing blocks as orphans. Kaspa includes them, making the network far more efficient.",
-        "5/ The result: near-instant confirmations, high throughput, and strong decentralization — all at the same time.",
-        "6/ This is why many consider Kaspa the most technically advanced proof-of-work network in existence today."
+        "1/ Kaspa uses BlockDAG instead of traditional blockchain. Blocks are created in parallel.",
+        "2/ The GhostDAG protocol orders all parallel blocks into a coherent ledger.",
+        "3/ This allows Kaspa to run at 1 block per second today.",
+        "4/ Traditional blockchains discard competing blocks. Kaspa includes them all.",
+        "5/ The result: near-instant confirmations and high throughput.",
+        "6/ This is why many consider Kaspa the most advanced proof-of-work network today."
     ]
 
 def gerar_artigo():
-    temas = [
-        "Complete guide to Kaspa BlockDAG technology",
-        "Understanding GhostDAG: the protocol behind Kaspa",
-        "Kaspa mining: complete guide for 2025",
-        "Why Kaspa is different from every other crypto",
-        "The future of proof of work: why Kaspa matters"
-    ]
+    temas = ["Complete guide to Kaspa BlockDAG","Understanding GhostDAG protocol","Kaspa mining complete guide","Why Kaspa is different from every crypto","Future of proof of work with Kaspa"]
     tema = random.choice(temas)
-    prompt = f"""Write a detailed Twitter article thread of 12 parts about: {tema}
-Rules:
-- Part 1: Compelling title starting with ARTICLE 📝
-- Parts 2-12: Deep, educational content
-- Each part maximum 240 characters
-- Professional and informative tone
-- Include real technical details and facts
-- No hashtags
-- Each part should add new value
-Separate each part with ### symbol.
-Return only the 12 parts."""
-
+    prompt = f"Write a 12-part Twitter article about: {tema}. Part 1 starts with ARTICLE. Max 240 chars each. No hashtags. Separate with ###. Only return the parts."
     resultado = gerar_com_gemini(prompt)
     if resultado:
         partes = [p.strip() for p in resultado.split("###") if p.strip()]
@@ -158,4 +100,39 @@ def postar_artigo():
     tweet_id = primeiro.data["id"]
     time.sleep(3)
     for parte in partes[1:]:
-        r = client.create_twe
+        r = client.create_tweet(text=parte, in_reply_to_tweet_id=tweet_id)
+        tweet_id = r.data["id"]
+        time.sleep(random.randint(4, 10))
+    print(f"Artigo: {len(partes)} partes.")
+
+posts_hoje = 0
+ultimo_reset = time.strftime("%d")
+
+def resetar_se_novo_dia():
+    global posts_hoje, ultimo_reset
+    hoje = time.strftime("%d")
+    if hoje != ultimo_reset:
+        posts_hoje = 0
+        ultimo_reset = hoje
+        print("Novo dia - contadores resetados.")
+
+print("Bot Kaspa + Gemini iniciado!")
+
+while True:
+    try:
+        resetar_se_novo_dia()
+        if posts_hoje >= 28:
+            print("Limite diario. Aguardando...")
+            time.sleep(1800)
+            continue
+        acao = random.choices(["tweet","thread","artigo"], weights=[45,35,20])[0]
+        if acao == "tweet":
+            postar_tweet()
+        elif acao == "thread":
+            postar_thread()
+        elif acao == "artigo":
+            postar_artigo()
+        posts_hoje += 1
+        print(f"Posts hoje: {posts_hoje}/28")
+        espera = random.randint(2700, 5400)
+        print(f"Aguardando {espera/60:.0f} min...
