@@ -22,7 +22,7 @@ client = tweepy.Client(
 
 def gerar_com_gemini(prompt):
     try:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_KEY}"
+        url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_KEY
         r = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=30)
         return r.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
     except:
@@ -31,41 +31,28 @@ def gerar_com_gemini(prompt):
 def gerar_tweet():
     temas = ["BlockDAG architecture","GhostDAG protocol","Kaspa mining","KAS tokenomics","Kaspa vs Bitcoin","KRC-20 smart contracts"]
     tema = random.choice(temas)
-    prompt = f"Write a unique tweet about {tema} related to Kaspa crypto. Max 240 chars. No hashtags. Max 1 emoji. Expert tone. Only return the tweet."
+    prompt = "Write a unique tweet about " + tema + " related to Kaspa crypto. Max 240 chars. No hashtags. Max 1 emoji. Expert tone. Only return the tweet."
     resultado = gerar_com_gemini(prompt)
     if resultado:
         return resultado[:240]
-    fallback = [
-        "Kaspa BlockDAG processes 1 block per second today with roadmap targeting 100.",
-        "GhostDAG does not discard parallel blocks it orders them all.",
-        "Kaspa mining attracts serious ASIC development for long-term proof of work.",
-        "KRC-20 brings smart contracts to Kaspa without sacrificing speed.",
-        "Kaspa achieves near-instant finality through parallel block confirmation."
-    ]
+    fallback = ["Kaspa BlockDAG processes 1 block per second today.","GhostDAG does not discard parallel blocks it orders them all.","Kaspa mining attracts serious ASIC development.","KRC-20 brings smart contracts to Kaspa.","Kaspa achieves near-instant finality."]
     return random.choice(fallback)
 
 def gerar_thread():
-    temas = ["How Kaspa BlockDAG works","Why GhostDAG is a breakthrough","Kaspa mining explained","Kaspa vs Bitcoin comparison"]
+    temas = ["How Kaspa BlockDAG works","Why GhostDAG is a breakthrough","Kaspa mining explained","Kaspa vs Bitcoin"]
     tema = random.choice(temas)
-    prompt = f"Write Twitter thread of 6 parts about: {tema}. Part 1 starts with THREAD. Parts 2-6 start with number/. Max 240 chars each. No hashtags. Separate with ###. Only return parts."
+    prompt = "Write Twitter thread of 6 parts about: " + tema + ". Part 1 starts with THREAD. Parts 2-6 start with number/. Max 240 chars each. No hashtags. Separate with ###. Only return parts."
     resultado = gerar_com_gemini(prompt)
     if resultado:
         partes = [p.strip() for p in resultado.split("###") if p.strip()]
         if len(partes) >= 4:
             return partes[:6]
-    return [
-        "THREAD Why Kaspa is the most technically interesting crypto right now:",
-        "1/ Kaspa uses BlockDAG instead of traditional blockchain.",
-        "2/ GhostDAG orders all parallel blocks into a coherent ledger.",
-        "3/ This allows Kaspa to run at 1 block per second today.",
-        "4/ Traditional blockchains discard competing blocks. Kaspa includes them all.",
-        "5/ Near-instant confirmations and high throughput without sacrificing security."
-    ]
+    return ["THREAD Why Kaspa is interesting:","1/ Kaspa uses BlockDAG instead of blockchain.","2/ GhostDAG orders all parallel blocks.","3/ Kaspa runs at 1 block per second.","4/ Traditional blockchains discard blocks. Kaspa includes them.","5/ Near-instant confirmations and high throughput."]
 
 def gerar_artigo():
     temas = ["Complete guide to Kaspa BlockDAG","Understanding GhostDAG","Kaspa mining guide","Why Kaspa is unique"]
     tema = random.choice(temas)
-    prompt = f"Write 10-part Twitter article about: {tema}. Part 1 starts with ARTICLE. Max 240 chars each. No hashtags. Separate with ###. Only return parts."
+    prompt = "Write 10-part Twitter article about: " + tema + ". Part 1 starts with ARTICLE. Max 240 chars each. No hashtags. Separate with ###. Only return parts."
     resultado = gerar_com_gemini(prompt)
     if resultado:
         partes = [p.strip() for p in resultado.split("###") if p.strip()]
